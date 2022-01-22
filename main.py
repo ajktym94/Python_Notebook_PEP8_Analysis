@@ -328,7 +328,8 @@ def import_top_error(cells):
 				lines = cell["source"].split("\n")
 			for line in lines:
 				curr_line = curr_line + 1
-				if (line.startswith('"""') or line.startswith("'''")) and (line.endswith('"""') or line.endswith("'''")):
+				if (line.startswith('"""') or line.startswith("'''")) and \
+					(line.endswith('"""') or line.endswith("'''")):
 					continue
 				if (line.startswith('"""') or line.startswith("'''")) and not docstring_started:
 					docstring_started = True
