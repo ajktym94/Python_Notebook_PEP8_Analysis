@@ -69,9 +69,9 @@ df_python.drop("cells")\
 # Assign labels to max length
 
 def label(length):
-    if int(length) > 98:
+    if int(length) > 99:
         return "Wrong"
-    elif int(length) > 76 and int(length) <= 99:
+    elif int(length) > 79 and int(length) <= 99:
         return "Allowed"
     else:
         return "Good"  
