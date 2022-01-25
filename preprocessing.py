@@ -106,6 +106,28 @@ df_python.withColumn("md_cd", mark_code_count_udf(col("cells")))\
 
 # ========================================================================================================
 
+# Linear execution or not
+
+def linear(cells):
+	a = 0
+	for cell in cells:
+		if cell["cell_type"] == "code":
+			if cell["execution_count"]:
+				if cell["execution_count"] > a:
+					a = cell["execution_count"]
+				else:
+					return False
+	return True
+
+linear_udf = udf(lambda x: linear(x))
+
+df_python.withColumn("linear_ec", linear_udf(col("cells")))\
+            .drop("cells")\
+            .coalesce(1)\
+            .write.csv("notebook_results_id/linear_ec", header = True)
+
+# ========================================================================================================
+
 # Check if JSON decodable string or not
 
 def check_JSON(cells):
@@ -129,28 +151,6 @@ df_python = df_python.withColumn("check_JSON", check_JSON_udf(col("cells")))
 df_python = df_python.filter(df_python.check_JSON != "null")
 
 df_python = df_python.drop("check_JSON")
-
-# ========================================================================================================
-
-# Linear execution or not
-
-def linear(cells):
-	a = 0
-	for cell in cells:
-		if cell["cell_type"] == "code":
-			if cell["execution_count"]:
-				if cell["execution_count"] > a:
-					a = cell["execution_count"]
-				else:
-					return False
-	return True
-
-linear_udf = udf(lambda x: linear(x))
-
-df_python.withColumn("linear_ec", linear_udf(col("cells")))\
-            .drop("cells")\
-            .coalesce(1)\
-            .write.csv("notebook_results_id/linear_ec", header = True)
 
 # ========================================================================================================
 
